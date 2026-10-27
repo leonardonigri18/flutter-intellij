@@ -1,23 +1,22 @@
-<!--* freshness: { reviewed: '2026-10-25' } *-->
+<!--* freshness: { reviewed: '2026-08-17' } *-->
 # Flutter Coverage
 
 ## Overview
 Configures test coverage execution and parsing (LCOV) for Flutter applications.
 
 ## Interface
-- [`FlutterCoverageAnnotator`](FlutterCoverageAnnotator.java)
-- [`FlutterCoverageEnabledConfiguration`](FlutterCoverageEnabledConfiguration.java)
-- [`FlutterCoverageEngine`](FlutterCoverageEngine.java)
-- [`FlutterCoverageProgramRunner`](FlutterCoverageProgramRunner.java)
-- [`FlutterCoverageRunner`](FlutterCoverageRunner.java)
-- [`FlutterCoverageSuite`](FlutterCoverageSuite.java)
-- [`LcovInfo`](LcovInfo.java)
+- `FlutterCoverageAnnotator`
+- `FlutterCoverageEnabledConfiguration`
+- `FlutterCoverageEngine`
+- `FlutterCoverageProgramRunner`
+- `FlutterCoverageRunner`
+- `FlutterCoverageSuite`
+- `LcovInfo`
 
 ## Invariants
-- FlutterCoverageAnnotator does not collect coverage inside library directories, and limits coverage roots to the content roots of modules with Flutter contents.
+- FlutterCoverageAnnotator does not collect coverage inside library directories.
 - FlutterCoverageEnabledConfiguration expects coverage file at 'coverage/lcov.info' relative to the pub root.
-- FlutterCoverageEngine applies only to [`TestConfig`](../test/TestConfig.java) runs (a `WrappingRunConfiguration` is unwrapped to its peer before the check).
-- FlutterCoverageEngine only creates suites from a FlutterCoverageEnabledConfiguration; the legacy `createCoverageSuite(..., filters, timestamps, ...)` overload always returns null.
+- FlutterCoverageEngine applies only to TestConfig runs.
 - FlutterCoverageEngine editor highlighting applies only to Dart files in 'lib' subdirectory.
 - FlutterCoverageEngine canHavePerTestCoverage is always true.
 - FlutterCoverageProgramRunner ID is 'FlutterCoverageProgramRunner'.
@@ -30,7 +29,7 @@ Configures test coverage execution and parsing (LCOV) for Flutter applications.
 
 ## Side Effects
 - FlutterCoverageEnabledConfiguration adds coverage suite to CoverageDataManager asynchronously.
-- FlutterCoverageProgramRunner adds a process listener. It removes the listener only after processing coverage, when `coverage/lcov.info` exists and runner settings are non-null; if the file is missing it logs an error and the listener stays attached.
+- FlutterCoverageProgramRunner adds and later removes a process listener.
 - FlutterCoverageProgramRunner invokes VfsUtil to refresh the coverage directory on process termination.
 - FlutterCoverageProgramRunner invokes CoverageDataManager.processGatheredCoverage on process termination.
 - LcovInfo.readInto modifies the passed ProjectData object, appending parsed coverage data.
