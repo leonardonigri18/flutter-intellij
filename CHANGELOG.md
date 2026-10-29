@@ -8,11 +8,9 @@
 
 ### Removed
 - Legacy Dart Analysis Server URI mapping during debugging. (#9149)
-- Support for Flutter SDK versions older than 3.22.2.
 
 ### Fixed
 - Empty Flutter SDK dropdown in the New Project wizard when switching to Flutter after starting the wizard on another language. (#9106)
-- Process handlers of terminated apps are no longer kept until the project closes. (#9169)
 
 ## 97.0.0
 
