@@ -1,39 +1,36 @@
-<!--* freshness: { reviewed: '2026-10-25' } *-->
+<!--* freshness: { reviewed: '2026-08-31' } *-->
 # Flutter Console
 
 ## Overview
-Manages the IDE console view for Flutter tasks, providing formatted output, exception folding, and file path hyperlinking. Consoles are shown as content tabs in the platform Messages tool window.
+Manages the IDE console view for Flutter tasks, providing formatted output, exception folding, and file path hyperlinking.
 
 ## Interface
-- [`FlutterConsole`](FlutterConsole.java) (package-private; used through `FlutterConsoles`)
-- [`FlutterConsoleExceptionFolding`](FlutterConsoleExceptionFolding.java)
+- `FlutterConsole`
+- `FlutterConsoleExceptionFolding`
 - `FlutterConsoleExceptionFolding.shouldFoldLine`
 - `FlutterConsoleExceptionFolding.shouldBeAttachedToThePreviousLine`
 - `FlutterConsoleExceptionFolding.getPlaceholderText`
-- [`FlutterConsoleFilter`](FlutterConsoleFilter.java)
+- `FlutterConsoleFilter`
 - `FlutterConsoleFilter.FlutterConsoleFilter`
 - `FlutterConsoleFilter.fileAtPath`
 - `FlutterConsoleFilter.applyFilter`
-- [`FlutterConsoleFolding`](FlutterConsoleFolding.java): folds long `.../flutter --no-color ...` command lines into a short `flutter ...` placeholder.
+- `FlutterConsoleFolding`
 - `FlutterConsoleFolding.shouldFoldLine`
 - `FlutterConsoleFolding.shouldBeAttachedToThePreviousLine`
 - `FlutterConsoleFolding.getPlaceholderText`
-- [`FlutterConsoles`](FlutterConsoles.java)
+- `FlutterConsoles`
 - `FlutterConsoles.displayProcessLater`
-- `FlutterConsoles.displayMessage` (with an overload taking `clearContent`)
+- `FlutterConsoles.displayMessage`
 
 ## Invariants
 - There is one shared Flutter console per Module, and one global Flutter console for tasks without a module.
 - UI operations like showing a process or displaying a message are always executed on the UI thread.
-- Both folding classes are registered as `console.folding` extensions in [`plugin.xml`](../../../../resources/META-INF/plugin.xml), with FlutterConsoleExceptionFolding ordered after FlutterConsoleFolding.
-- Exception folding only occurs if FlutterSettings specifies showing structured errors and not including all stack traces. Folding toggles on lines starting with `=======`, and the placeholder shows the first folded line.
+- Exception folding only occurs if FlutterSettings specifies showing structured errors and not including all stack traces.
 - FlutterConsoleFolding does not attach to the previous line to prevent appending to unrelated output.
-- FlutterConsoleFilter is attached only to module consoles; the global console has no file or `flutter doctor` hyperlinking.
-- File paths are only hyperlinked if they resolve to an existing file under one of the module's content roots (or its `example/` subdirectory). Recognized forms include `Launching <path>`, `open <path>`, `(path:line)`, `file:///...:line:col`, and `path:line:col: Error`.
-- Lines starting with "Lost connection to device" are highlighted in the error color with a boxed effect.
+- File paths in the console are only hyperlinked if the files exist in the file system or module's content roots.
 
 ## Side Effects
-- Adds content tabs (wrapping ConsoleViews) to the Messages tool window via `MessageView` and activates that tool window.
-- Spawns external processes, such as executing `open` for Xcode files.
+- Creates and manipulates UI elements including ToolWindows, MessageViews, and ConsoleViews.
+- Spawns external processes, such as executing 'open' for external files.
 - Starts the 'flutter doctor' process when its hyperlink is clicked.
-- Displays error dialogs or notifications if external commands or file openings fail.
+- Displays error dialogs or messages if external commands or file openings fail.
