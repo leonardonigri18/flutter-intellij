@@ -20,7 +20,7 @@ public class DeepLinksViewFactory extends AbstractDevToolsViewFactory {
 
   @Override
   public boolean versionSupportsThisTool(@NotNull final FlutterSdkVersion flutterSdkVersion) {
-    return true;
+    return flutterSdkVersion.canUseDeepLinksTool();
   }
 
   @Override
