@@ -1,19 +1,17 @@
-<!--* freshness: { reviewed: '2026-10-25' } *-->
+<!--* freshness: { reviewed: '2026-09-07' } *-->
 # Flutter Settings
 
 ## Overview
-Manages persistent IDE settings and preferences for the Flutter plugin. The settings UI that edits these values lives in `src/io/flutter/sdk/`: [`FlutterSettingsConfigurable`](../sdk/FlutterSettingsConfigurable.java) and [`FlutterSearchableOptionContributor`](../sdk/FlutterSearchableOptionContributor.java).
+Manages persistent IDE settings and preferences for the Flutter plugin.
 
 ## Interface
-- `class FlutterSettings` ([`FlutterSettings.java`](FlutterSettings.java))
+- `class FlutterSettings`
 - `interface FlutterSettings.Listener`
-- `@VisibleForTesting static FlutterSettings.setInstance(FlutterSettings)`: installs a test override returned by `getInstance()`.
 
 ## Invariants
-- Most FlutterSettings keys are hardcoded string constants, mapped to boolean/string values in IntelliJ's PropertiesComponent. Exception: the SDK-outdated acknowledgement key is built dynamically as `<key>_<versionText>_<beforeSunset|afterSunset>`.
-- `isShowClosingLabels`/`setShowClosingLabels` are not stored in PropertiesComponent; they delegate entirely to the Dart plugin's `DartClosingLabelManager`.
-- Most property setters trigger settingsChanged() on registered Listener objects via EventDispatcher. These do **not** notify listeners: `setShowClosingLabels`, `setFontPackages`, `setSdkVersionOutdatedWarningAcknowledged`, `setAndroidStudioBotAcknowledgedKey`, `setFilePathLoggingEnabled`.
-- FlutterSettings acts as an application service singleton but can be overridden with a test instance via `setInstance(...)`.
+- FlutterSettings keys are hardcoded string constants, mapped to boolean/string values in IntelliJ's PropertiesComponent.
+- Property updates in FlutterSettings generally trigger settingsChanged() on registered Listener objects via EventDispatcher.
+- FlutterSettings acts as an application service singleton but can be overridden with a testInstance.
 
 ## Side Effects
 - FlutterSettings writes and reads to IntelliJ IDE's PropertiesComponent, which serializes configuration to disk.
