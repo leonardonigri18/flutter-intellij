@@ -22,6 +22,8 @@ import com.intellij.xdebugger.frame.XStackFrame;
 import com.intellij.xdebugger.impl.XDebugSessionImpl;
 import com.jetbrains.lang.dart.DartFileType;
 import io.flutter.logging.PluginLogger;
+import io.flutter.sdk.FlutterSdk;
+import io.flutter.sdk.FlutterSdkVersion;
 import io.flutter.settings.FlutterSettings;
 import io.flutter.utils.OpenApiUtils;
 import io.flutter.vmService.frame.DartAsyncMarkerFrame;
@@ -201,16 +203,25 @@ public class VmServiceWrapper implements Disposable {
       }
     });
 
-    streamListen("ToolEvent", new SuccessConsumer() {
-      @Override
-      public void received(Success response) {
-      }
+    FlutterSdkVersion flutterSdkVersion = null;
+    myDebugProcess.getSession();
+    final FlutterSdk flutterSdk = FlutterSdk.getFlutterSdk(myDebugProcess.getSession().getProject());
+    if (flutterSdk != null) {
+      flutterSdkVersion = flutterSdk.getVersion();
+    }
 
-      @Override
-      public void onError(RPCError error) {
-        LOG.error("Error listening to ToolEvent stream: " + error);
-      }
-    });
+    if (flutterSdkVersion != null && flutterSdkVersion.canUseToolEventStream()) {
+      streamListen("ToolEvent", new SuccessConsumer() {
+        @Override
+        public void received(Success response) {
+        }
+
+        @Override
+        public void onError(RPCError error) {
+          LOG.error("Error listening to ToolEvent stream: " + error);
+        }
+      });
+    }
   }
 
   private void streamListen(@NotNull String streamId, @NotNull SuccessConsumer consumer) {
